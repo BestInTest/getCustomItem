@@ -11,7 +11,6 @@ import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemManager;
 import dev.gether.getcustomitem.item.ItemType;
 import dev.gether.getcustomitem.item.customize.CrossBowItem;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,10 +51,9 @@ public class CrossbowListener implements Listener {
 
             if (ItemUtil.sameItem(crossBowItem.getItem().getItemStack(), bow)) {
                 double cooldownSeconds = cooldownManager.getCooldownSecond(shooter, crossBowItem);
-                Bukkit.broadcastMessage("#"+cooldownSeconds);
                 if(cooldownSeconds <= 0 || shooter.hasPermission(crossBowItem.getPermissionBypass())) {
-                    itemManager.startArrowTrail(arrow, crossBowItem.getParticleConfig()); // particles
-                    itemManager.playSound(arrow.getLocation(), crossBowItem.getSoundConfig()); // play sound
+                    crossBowItem.runParticles(arrow); // particles
+                    crossBowItem.playSound(arrow.getLocation()); // play sound
                     // add custom meta to arrow for help with verify custom arrow
                     arrow.setMetadata(metadataKey, new FixedMetadataValue(plugin, true));
                     cooldownManager.setCooldown(shooter, crossBowItem); // set cooldown
@@ -107,8 +105,6 @@ public class CrossbowListener implements Listener {
             if(winTicket <= crossBowItem.getChance() ) {
                 hitPlayer.teleport(shooter);
             }
-
-
         }
     }
 

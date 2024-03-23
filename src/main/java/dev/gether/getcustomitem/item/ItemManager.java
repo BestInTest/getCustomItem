@@ -2,11 +2,6 @@ package dev.gether.getcustomitem.item;
 
 import dev.gether.getcustomitem.GetCustomItem;
 import dev.gether.getcustomitem.config.Config;
-import dev.gether.getcustomitem.config.addon.ParticleConfig;
-import dev.gether.getcustomitem.config.addon.SoundConfig;
-import org.bukkit.Location;
-import org.bukkit.entity.Arrow;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
 
@@ -34,32 +29,6 @@ public class ItemManager {
     */
 
 
-    public void playSound(Location location, SoundConfig soundConfig) {
-        // check sound is enabled
-        if(!soundConfig.isEnable())
-            return;
 
-        location.getWorld().playSound(location, soundConfig.getSound(), 1F, 1F);
-    }
 
-    public void startArrowTrail(Arrow arrow, ParticleConfig particleConfig) {
-
-        // check the particles is enabled
-        if(!particleConfig.isEnable())
-            return;
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                // check if the arrow has landed or is removed
-                if (arrow.isOnGround() || !arrow.isValid()) {
-                    this.cancel();
-                    return;
-                }
-
-                arrow.getWorld().spawnParticle(particleConfig.getParticle(), arrow.getLocation(), 5, 0.1, 0.1, 0.1, 0.01);
-            }
-        }.runTaskTimer(plugin, 0L, 1L);
-
-    }
 }

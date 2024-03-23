@@ -48,7 +48,7 @@ public class CustomItemCommand {
             return;
         }
         CustomItem customItem = customItemByType.get();
-        ItemStack itemStack = customItem.getItem().getItemStack().clone(); // clone item to change amount
+        ItemStack itemStack = customItem.getItemStack().clone(); // clone item to change amount
         itemStack.setAmount(amount); // set new amount
 
         target.getInventory().addItem(itemStack); // add item to the player (target)
@@ -73,6 +73,19 @@ public class CustomItemCommand {
             MessageUtil.sendMessage(commandSender, "&cYou cannot use this command by console");
         }
     }
+
+    @Execute(name = "debug")
+    public void debugItem(@Context CommandSender commandSender) {
+        // check commandSender is player
+        if(commandSender instanceof Player player) {
+            ItemStack mainHand = player.getInventory().getItemInMainHand();
+            MessageUtil.sendMessage(player, mainHand.toString());
+        } else {
+            MessageUtil.sendMessage(commandSender, "&cYou cannot use this command by console");
+        }
+    }
+
+
 
 
 }

@@ -24,8 +24,12 @@ public class WorldGuardUtil {
     }
 
     public static boolean isInRegion(Player player) {
+        return isInRegion(BukkitAdapter.adapt(player.getLocation()));
+    }
+
+    public static boolean isInRegion(com.sk89q.worldedit.util.Location location) {
         RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
-        ApplicableRegionSet applicableRegions = query.getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
+        ApplicableRegionSet applicableRegions = query.getApplicableRegions(location);
         return !applicableRegions.getRegions().isEmpty();
     }
 }
