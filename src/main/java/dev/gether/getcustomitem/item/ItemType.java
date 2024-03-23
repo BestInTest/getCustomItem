@@ -1,2 +1,6 @@
-package dev.gether.getcustomitem.item;public class ItemType {
+package dev.gether.getcustomitem.item;
+
+public enum ItemType {
+    HOOK,
+    CROSSBOW
 }

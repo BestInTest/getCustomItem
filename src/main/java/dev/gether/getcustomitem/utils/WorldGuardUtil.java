@@ -1,4 +1,4 @@
-package dev.gether.getcustomitem;
+package dev.gether.getcustomitem.utils;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;
