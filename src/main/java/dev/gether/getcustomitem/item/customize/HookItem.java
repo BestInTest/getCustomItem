@@ -7,8 +7,8 @@ import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemType;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 
 @Getter
@@ -21,19 +21,11 @@ public class HookItem extends CustomItem {
     public HookItem() {
 
     }
-    public HookItem(Item item, ItemType itemType, int cooldown, String permissionByPass, SoundConfig soundConfig, double multiply, double divideHeight) {
-        super(item, itemType, cooldown, permissionByPass, soundConfig);
+
+    public HookItem(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, double multiply, double divideHeight) {
+        super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
         this.multiply = multiply;
         this.divideHeight = divideHeight;
-    }
-
-    @Override
-    public ItemStack getItemStack() {
-        ItemStack itemStack = getItem().getItemStack().clone();
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setUnbreakable(true);
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
     }
 
 

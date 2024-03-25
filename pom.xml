@@ -6,7 +6,7 @@
 
     <groupId>dev.gether</groupId>
     <artifactId>getCustomItem</artifactId>
-    <version>0.5-beta</version>
+    <version>0.7-beta</version>
     <packaging>jar</packaging>
 
     <name>getCustomItem</name>
@@ -132,7 +132,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>RELEASE</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

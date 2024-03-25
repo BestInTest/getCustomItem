@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,8 @@ public class AntyCobweb extends CustomItem {
 
     public AntyCobweb() {}
 
-    public AntyCobweb(Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, int radiusX, int radiusY) {
-        super(item, itemType, cooldown, permissionBypass, soundConfig);
+    public AntyCobweb(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, int radiusX, int radiusY) {
+        super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
         this.radiusX = radiusX;
         this.radiusY = radiusY;
     }
@@ -42,6 +43,10 @@ public class AntyCobweb extends CustomItem {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (itemMeta != null) {
+            itemMeta.setUnbreakable(true);
+            // set usage to persistent data
+            itemMeta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.INTEGER, usage);
+
             List<String> lore = new ArrayList<>();
             if (itemMeta.hasLore())
                 lore.addAll(itemMeta.getLore());
@@ -49,6 +54,7 @@ public class AntyCobweb extends CustomItem {
             lore.replaceAll(line -> line
                     .replace("{radius-x}", String.valueOf(radiusX))
                     .replace("{radius-y}", String.valueOf(radiusY))
+                    .replace("{usage}", String.valueOf(usage))
             );
             itemMeta.setLore(ColorFixer.addColors(lore));
         }
@@ -63,7 +69,7 @@ public class AntyCobweb extends CustomItem {
                     Location tempLoc = location.clone().add(x, y, z);
                     com.sk89q.worldedit.util.Location locWordGuard = BukkitAdapter.adapt(tempLoc);
                     if (WorldGuardUtil.isInRegion(locWordGuard) &&
-                            WorldGuardUtil.isDeniedFlag(tempLoc, null, Flags.BLOCK_BREAK)) {
+                            WorldGuardUtil.isDeniedFlag(tempLoc, Flags.BLOCK_BREAK)) {
                         continue;
                     }
                     Block block = tempLoc.getBlock();

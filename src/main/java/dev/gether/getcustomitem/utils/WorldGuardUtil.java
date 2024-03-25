@@ -22,6 +22,14 @@ public class WorldGuardUtil {
 
         return query.testState(loc, localPlayer, stateFlag);
     }
+    public static boolean isDeniedFlag(Location location, StateFlag stateFlag){
+        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = regionContainer.createQuery();
+
+        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(location);
+
+        return query.testState(loc, null, stateFlag);
+    }
 
     public static boolean isInRegion(Player player) {
         return isInRegion(BukkitAdapter.adapt(player.getLocation()));

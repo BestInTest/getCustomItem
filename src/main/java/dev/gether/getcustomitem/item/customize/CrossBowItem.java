@@ -11,9 +11,10 @@ import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemType;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -28,9 +29,11 @@ public class CrossBowItem extends CustomItem {
     private double chance = 30;
     public CrossBowItem() {}
 
-    public CrossBowItem(Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, ParticleConfig particleConfig) {
-        super(item, itemType, cooldown, permissionBypass, soundConfig);
+    public CrossBowItem(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, ParticleConfig particleConfig, String permissionIgnoreEffect, double chance) {
+        super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
         this.particleConfig = particleConfig;
+        this.permissionIgnoreEffect = permissionIgnoreEffect;
+        this.chance = chance;
     }
 
 
@@ -40,11 +43,17 @@ public class CrossBowItem extends CustomItem {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if(itemMeta != null) {
+        itemMeta.setUnbreakable(true);
+
+            // set usage to persistent data
+            itemMeta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.INTEGER, usage);
+
             List<String> lore = new ArrayList<>();
             if (itemMeta.hasLore())
                 lore.addAll(itemMeta.getLore());
 
-            lore.replaceAll(line -> line.replace("{chance}", String.valueOf(chance)));
+            lore.replaceAll(line -> line.replace("{chance}", String.valueOf(chance))
+                    .replace("{usage}", String.valueOf(usage)));
             itemMeta.setLore(ColorFixer.addColors(lore));
         }
         itemStack.setItemMeta(itemMeta);
@@ -53,7 +62,7 @@ public class CrossBowItem extends CustomItem {
                 .build();
     }
 
-    public void runParticles(Arrow arrow) {
+    public void runParticles(Entity arrow) {
 
         // check the particles is enabled
         if(!particleConfig.isEnable())

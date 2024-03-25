@@ -1,7 +1,9 @@
 package dev.gether.getcustomitem.item.customize;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import dev.gether.getconfig.annotation.Comment;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.potion.PotionEffectConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getconfig.utils.ColorFixer;
 import dev.gether.getcustomitem.item.CustomItem;
@@ -17,17 +19,26 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonTypeName("frozen_sword")
-public class FrozenSword extends CustomItem {
-    private int frozenSeconds;
-    private double chanceToFrozen;
+@JsonTypeName("effect_radius")
+public class EffectRadiusItem extends CustomItem {
 
-    public FrozenSword() {}
+    @Comment("apply the effect to yourself")
+    private boolean includingYou;
+    @Comment("apply the effect to players within a radius")
+    private boolean otherPlayers;
+    private int radius;
+    private List<PotionEffectConfig> activeEffect;
+    private List<String> removeEffect;
 
-    public FrozenSword(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, int frozenSeconds, double chanceToFrozen) {
+    public EffectRadiusItem() {}
+
+    public EffectRadiusItem(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, boolean includingYou, boolean otherPlayers, int radius, List<PotionEffectConfig> activeEffect, List<String> removeEffect) {
         super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
-        this.frozenSeconds = frozenSeconds;
-        this.chanceToFrozen = chanceToFrozen;
+        this.includingYou = includingYou;
+        this.otherPlayers = otherPlayers;
+        this.radius = radius;
+        this.activeEffect = activeEffect;
+        this.removeEffect = removeEffect;
     }
 
     @Override
@@ -46,8 +57,7 @@ public class FrozenSword extends CustomItem {
                 lore.addAll(itemMeta.getLore());
 
             lore.replaceAll(line -> line
-                    .replace("{chance}", String.valueOf(chanceToFrozen))
-                    .replace("{seconds}", String.valueOf(frozenSeconds))
+                    .replace("{radius}", String.valueOf(radius))
                     .replace("{usage}", String.valueOf(usage))
             );
             itemMeta.setLore(ColorFixer.addColors(lore));
@@ -55,4 +65,6 @@ public class FrozenSword extends CustomItem {
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
+
+    // todo: custom particles etc.
 }

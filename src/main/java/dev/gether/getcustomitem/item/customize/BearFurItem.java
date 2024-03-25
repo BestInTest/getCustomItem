@@ -17,17 +17,17 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonTypeName("frozen_sword")
-public class FrozenSword extends CustomItem {
-    private int frozenSeconds;
-    private double chanceToFrozen;
+@JsonTypeName("bear_fur")
+public class BearFurItem extends CustomItem {
 
-    public FrozenSword() {}
+    private double reducedDamage;
+    private int seconds;
+    public BearFurItem() {}
 
-    public FrozenSword(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, int frozenSeconds, double chanceToFrozen) {
+    public BearFurItem(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, double reducedDamage, int seconds) {
         super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
-        this.frozenSeconds = frozenSeconds;
-        this.chanceToFrozen = chanceToFrozen;
+        this.reducedDamage = reducedDamage;
+        this.seconds = seconds;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class FrozenSword extends CustomItem {
                 lore.addAll(itemMeta.getLore());
 
             lore.replaceAll(line -> line
-                    .replace("{chance}", String.valueOf(chanceToFrozen))
-                    .replace("{seconds}", String.valueOf(frozenSeconds))
+                    .replace("{reduced-damage}", String.valueOf(reducedDamage))
+                    .replace("{seconds}", String.valueOf(seconds))
                     .replace("{usage}", String.valueOf(usage))
             );
             itemMeta.setLore(ColorFixer.addColors(lore));
@@ -55,4 +55,5 @@ public class FrozenSword extends CustomItem {
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
+
 }

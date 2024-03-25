@@ -1,6 +1,5 @@
 package dev.gether.getcustomitem.listener;
 
-import dev.gether.getconfig.utils.ConsoleColor;
 import dev.gether.getconfig.utils.ItemUtil;
 import dev.gether.getconfig.utils.MessageUtil;
 import dev.gether.getcustomitem.config.Config;
@@ -18,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
@@ -42,11 +40,15 @@ public class CobwebGrenadeListener implements Listener {
         Player player = event.getPlayer();
         ItemStack itemStack = event.getItem(); // using item
 
-        Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.COBWEB_GRENADE);
+        if(itemStack == null)
+            return;
+
+        Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.COBWEB_GRENADE, itemStack);
         if(customItemByType.isEmpty() || !(customItemByType.get() instanceof CobwebGrenade cobwebGrenade))
             return;
 
-        if(itemStack == null || !ItemUtil.sameItemName(itemStack, cobwebGrenade.getItem().getItemStack()))
+        // check the item is enabled / if not then cancel
+        if(!cobwebGrenade.isEnabled())
             return;
 
         event.setCancelled(true);
@@ -55,48 +57,29 @@ public class CobwebGrenadeListener implements Listener {
         if(action != Action.RIGHT_CLICK_BLOCK && action != Action.RIGHT_CLICK_AIR)
             return;
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        int usage = cobwebGrenade.getUsage(itemMeta); // get from item amount to usage
-
-
         double cooldownSeconds = cooldownManager.getCooldownSecond(player, cobwebGrenade);
         if(cooldownSeconds <= 0 || player.hasPermission(cobwebGrenade.getPermissionBypass())) {
-            if(usage >= 1) {
-                // set cooldown
-                cooldownManager.setCooldown(player, cobwebGrenade);
+            // set cooldown
+            cooldownManager.setCooldown(player, cobwebGrenade);
 
-                // create grenade
-                ThrownPotion thrownPotion = (ThrownPotion) player.getWorld().spawnEntity(player.getLocation().clone().add(0, 1.1, 0), EntityType.SPLASH_POTION);
-                thrownPotion.setItem(itemStack);
+            // create grenade
+            ThrownPotion thrownPotion = (ThrownPotion) player.getWorld().spawnEntity(player.getLocation().clone().add(0, 1.1, 0), EntityType.SPLASH_POTION);
+            thrownPotion.setItem(itemStack);
 
-                Location playerLocation = player.getEyeLocation();
-                Vector velocity = playerLocation.getDirection().multiply(cobwebGrenade.getMultiply());
-                thrownPotion.setVelocity(velocity); // throw grenade
+            Location playerLocation = player.getEyeLocation();
+            Vector velocity = playerLocation.getDirection().multiply(cobwebGrenade.getMultiply());
+            thrownPotion.setVelocity(velocity); // throw grenade
 
-                // particles and sound
-                cobwebGrenade.runParticles(thrownPotion); // particles
-                cobwebGrenade.playSound(player.getLocation()); // play sound
+            // particles and sound
+            cobwebGrenade.runParticles(thrownPotion); // particles
+            cobwebGrenade.playSound(player.getLocation()); // play sound
 
-                // usage over than 1 so just only update the item
-                // else case remove item from inventory
-                if(usage > 1) {
-                    // take one usage
-                    cobwebGrenade.takeAmount(itemStack);
-                    // update the lore
-                    cobwebGrenade.updateItem(itemStack);
-                    return;
-                }
-            }
-            EquipmentSlot hand = event.getHand();
-            if(hand == null) {
-                MessageUtil.logMessage(ConsoleColor.RED, "Something wrong! Cannot remove the grenade item.");
-                return;
-            }
-            // remove item when usage amount is lower than 1
-            switch (hand) {
-                case OFF_HAND -> player.getInventory().setItemInOffHand(null);
-                case HAND -> player.getInventory().setItemInMainHand(null);
-            }
+            // verify a value to usage of item
+            cobwebGrenade.takeUsage(player, itemStack, event.getHand());
+
+            // alert yourself
+            cobwebGrenade.notifyYourself(player);
+
         } else {
             MessageUtil.sendMessage(player, config.getLangConfig().getHasCooldown().replace("{time}", String.valueOf(cooldownSeconds)));
         }
@@ -110,7 +93,7 @@ public class CobwebGrenadeListener implements Listener {
         Location location = event.getEntity().getLocation();
         ItemStack itemStack = potion.getItem();
 
-        Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.COBWEB_GRENADE);
+        Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.COBWEB_GRENADE, itemStack);
         if(customItemByType.isEmpty())
             return;
 

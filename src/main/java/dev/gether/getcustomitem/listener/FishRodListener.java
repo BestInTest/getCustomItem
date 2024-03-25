@@ -3,7 +3,6 @@ package dev.gether.getcustomitem.listener;
 import dev.gether.getconfig.utils.MessageUtil;
 import dev.gether.getcustomitem.config.Config;
 import dev.gether.getcustomitem.cooldown.CooldownManager;
-import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemManager;
 import dev.gether.getcustomitem.item.ItemType;
 import dev.gether.getcustomitem.item.customize.HookItem;
@@ -12,10 +11,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class FishRodListener implements Listener {
 
@@ -33,22 +32,9 @@ public class FishRodListener implements Listener {
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
 
-        ItemStack mainHand = player.getInventory().getItemInMainHand();
-        ItemStack offHand = player.getInventory().getItemInOffHand();
+        HookItem hookItem = findHookItem(player); // find item
 
-        Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.HOOK);
-        if(customItemByType.isEmpty() || !(customItemByType.get() instanceof HookItem hookItem))
-            return;
-
-        ItemStack customFishingRod = hookItem.getItem().getItemStack();
-
-        // main-hand and off-hand is the same what customFishingRod - if not than cancel it / return
-        if(!customFishingRod.isSimilar(mainHand) && !customFishingRod.isSimilar(offHand))
-            return;
-
-        // check the item is enabled
-        if(!hookItem.isEnabled())
-            return;
+        if (hookItem == null || !hookItem.isEnabled()) return;
 
         PlayerFishEvent.State state = event.getState();
         if(state == PlayerFishEvent.State.IN_GROUND ||
@@ -70,10 +56,28 @@ public class FishRodListener implements Listener {
 
                 // set cooldown
                 cooldownManager.setCooldown(player, hookItem);
+
+                // verify a value to usage of item
+                hookItem.takeUsage(player);
+
+                // alert
+                hookItem.notifyYourself(player);
+
             } else {
                 MessageUtil.sendMessage(player, config.getLangConfig().getHasCooldown().replace("{time}", String.valueOf(cooldownSeconds)));
             }
 
         }
+    }
+
+    private HookItem findHookItem(Player player) {
+        return Stream.of(player.getInventory().getItemInMainHand(), player.getInventory().getItemInOffHand())
+                .map(item -> itemManager.findCustomItemByType(ItemType.HOOK, item))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(HookItem.class::isInstance)
+                .map(HookItem.class::cast)
+                .findFirst()
+                .orElse(null);
     }
 }

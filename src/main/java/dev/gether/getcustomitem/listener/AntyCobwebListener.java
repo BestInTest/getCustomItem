@@ -33,11 +33,15 @@ public class AntyCobwebListener implements Listener {
         Player player = event.getPlayer();
         ItemStack itemStack = event.getItem(); // using item
 
-        Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.ANTY_COBWEB);
+        if(itemStack == null)
+            return;
+
+        Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.ANTY_COBWEB, itemStack);
         if(customItemByType.isEmpty() || !(customItemByType.get() instanceof AntyCobweb antyCobweb))
             return;
 
-        if(itemStack == null || !itemStack.isSimilar(antyCobweb.getItemStack()))
+        // check the item is enabled / if not then cancel
+        if(!antyCobweb.isEnabled())
             return;
 
         event.setCancelled(true);
@@ -58,6 +62,11 @@ public class AntyCobwebListener implements Listener {
             // clean cobweb
             antyCobweb.cleanCobweb(player.getLocation());
 
+            // verify a value to usage of item
+            antyCobweb.takeUsage(player, itemStack, event.getHand());
+
+            // alert yourself
+            antyCobweb.notifyYourself(player);
 
         } else {
             MessageUtil.sendMessage(player, config.getLangConfig().getHasCooldown().replace("{time}", String.valueOf(cooldownSeconds)));

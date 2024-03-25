@@ -2,55 +2,41 @@ package dev.gether.getcustomitem.listener;
 
 import com.sk89q.worldguard.protection.flags.Flags;
 import dev.gether.getconfig.utils.MessageUtil;
+import dev.gether.getconfig.utils.PotionConverUtil;
 import dev.gether.getcustomitem.config.Config;
 import dev.gether.getcustomitem.cooldown.CooldownManager;
 import dev.gether.getcustomitem.item.CustomItem;
-import dev.gether.getcustomitem.item.manager.FrozenManager;
 import dev.gether.getcustomitem.item.ItemManager;
 import dev.gether.getcustomitem.item.ItemType;
 import dev.gether.getcustomitem.item.customize.FrozenSword;
+import dev.gether.getcustomitem.item.customize.HitEffectItem;
 import dev.gether.getcustomitem.utils.WorldGuardUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class FrozenSwordListener implements Listener {
+public class HitEffectListener implements Listener {
 
     private final ItemManager itemManager;
     private final CooldownManager cooldownManager;
     private final Config config;
-
-    private final FrozenManager frozenManager;
     private final Random random = new Random();
 
-    public FrozenSwordListener(ItemManager itemManager, CooldownManager cooldownManager, Config config, FrozenManager frozenManager) {
+    public HitEffectListener(ItemManager itemManager, CooldownManager cooldownManager, Config config) {
         this.itemManager = itemManager;
         this.cooldownManager = cooldownManager;
         this.config = config;
-        this.frozenManager = frozenManager;
     }
 
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-
-        double frozenTime = frozenManager.getFrozenTime(player);
-        if(frozenTime > 0) {
-            event.setCancelled(true);
-        } else {
-            frozenManager.cleanCache(player);
-        }
-
-    }
     @EventHandler
     public void onPlayerInteract(EntityDamageByEntityEvent event) {
         if(event.getDamager() instanceof Player damager &&
@@ -58,29 +44,22 @@ public class FrozenSwordListener implements Listener {
             ) {
 
             ItemStack itemStack = damager.getInventory().getItemInMainHand();
-            Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.FROZEN_SWORD, itemStack);
-            if(customItemByType.isEmpty() || !(customItemByType.get() instanceof FrozenSword frozenSword))
+            Optional<CustomItem> customItemByType = itemManager.findCustomItemByType(ItemType.HIT_EFFECT, itemStack);
+            if(customItemByType.isEmpty() || !(customItemByType.get() instanceof HitEffectItem hitEffectItem))
+                return;
+
+            // check the item is enabled / if not then cancel
+            if(!hitEffectItem.isEnabled())
                 return;
 
             event.setCancelled(true);
-
-            // check the item is enabled / if not then cancel
-            if(!frozenSword.isEnabled())
-                return;
 
             // check is not the npc
             boolean isCitizensNPC = victim.hasMetadata("NPC");
             if(isCitizensNPC) return;
 
-
-            double cooldownSeconds = cooldownManager.getCooldownSecond(damager, frozenSword);
-            if(cooldownSeconds <= 0 || damager.hasPermission(frozenSword.getPermissionBypass())) {
-                // set cooldown
-                cooldownManager.setCooldown(damager, frozenSword);
-
-                // particles and sound
-                frozenSword.playSound(damager.getLocation()); // play sound
-
+            double cooldownSeconds = cooldownManager.getCooldownSecond(damager, hitEffectItem);
+            if(cooldownSeconds <= 0 || damager.hasPermission(hitEffectItem.getPermissionBypass())) {
                 /* world-guard section */
                 // check the using player is in PVP region
                 if(WorldGuardUtil.isInRegion(damager) &&
@@ -92,26 +71,30 @@ public class FrozenSwordListener implements Listener {
                     return;
                 }
 
+                // set cooldown
+                cooldownManager.setCooldown(damager, hitEffectItem);
+
+                // particles and sound
+                hitEffectItem.playSound(damager.getLocation()); // play sound
+
+                // verify a value to usage of item
+                hitEffectItem.takeUsage(damager, itemStack, EquipmentSlot.HAND);
+
+                // alerts
+                hitEffectItem.notifyYourself(damager);
+
 
                 double winTicket = random.nextDouble() * 100;
-                if(winTicket <= frozenSword.getChanceToFrozen()) {
+                if(winTicket <= hitEffectItem.getChance()) {
+                    hitEffectItem.notifyOpponents(victim); // alert opponent
 
-                    // alerts
-                    frozenSword.notifyYourself(damager);
-                    frozenSword.notifyOpponents(victim);
-
-                    // freeze the player
-                    frozenManager.freeze(victim, frozenSword);
-
-                    // verify a value to usage of item
-                    frozenSword.takeUsage(damager, itemStack, EquipmentSlot.HAND);
-
+                    List<PotionEffect> activePotionEffect = PotionConverUtil.getPotionEffectFromConfig(hitEffectItem.getPotionEffectConfigs());
+                    activePotionEffect.forEach(victim::addPotionEffect); // set new effect
                 }
 
             } else {
                 MessageUtil.sendMessage(damager, config.getLangConfig().getHasCooldown().replace("{time}", String.valueOf(cooldownSeconds)));
             }
-
 
         }
 
@@ -134,6 +117,7 @@ public class FrozenSwordListener implements Listener {
 
         event.setCancelled(true);
     }
+
 
 
 

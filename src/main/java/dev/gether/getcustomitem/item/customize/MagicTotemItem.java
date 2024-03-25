@@ -15,19 +15,19 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Getter
 @Setter
-@JsonTypeName("frozen_sword")
-public class FrozenSword extends CustomItem {
-    private int frozenSeconds;
-    private double chanceToFrozen;
+@JsonTypeName("magic_totem")
+public class MagicTotemItem extends CustomItem {
+    private double chanceLostItem;
+    public MagicTotemItem() {
 
-    public FrozenSword() {}
+    }
 
-    public FrozenSword(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, int frozenSeconds, double chanceToFrozen) {
+    public MagicTotemItem(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, double chanceLostItem) {
         super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
-        this.frozenSeconds = frozenSeconds;
-        this.chanceToFrozen = chanceToFrozen;
+        this.chanceLostItem = chanceLostItem;
     }
 
     @Override
@@ -46,8 +46,7 @@ public class FrozenSword extends CustomItem {
                 lore.addAll(itemMeta.getLore());
 
             lore.replaceAll(line -> line
-                    .replace("{chance}", String.valueOf(chanceToFrozen))
-                    .replace("{seconds}", String.valueOf(frozenSeconds))
+                    .replace("{chance}", String.valueOf(chanceLostItem))
                     .replace("{usage}", String.valueOf(usage))
             );
             itemMeta.setLore(ColorFixer.addColors(lore));
@@ -55,4 +54,6 @@ public class FrozenSword extends CustomItem {
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
+
+
 }

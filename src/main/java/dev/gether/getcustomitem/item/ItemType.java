@@ -4,7 +4,10 @@ public enum ItemType {
     HOOK,
     CROSSBOW,
     COBWEB_GRENADE,
-    STICK_LEVITATION,
+    EFFECT_RADIUS,
     FROZEN_SWORD,
-    ANTY_COBWEB
+    ANTY_COBWEB,
+    BEAR_FUR,
+    MAGIC_TOTEM,
+    HIT_EFFECT
 }
