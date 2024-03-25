@@ -1,12 +1,12 @@
 package dev.gether.getcustomitem.config;
 
 import dev.gether.getconfig.GetConfig;
+import dev.gether.getconfig.annotation.Comment;
 import dev.gether.getconfig.domain.Item;
 import dev.gether.getconfig.domain.config.particles.DustOptions;
 import dev.gether.getconfig.domain.config.particles.ParticleConfig;
 import dev.gether.getconfig.domain.config.potion.PotionEffectConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
-import dev.gether.getconfig.utils.ItemBuilder;
 import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemType;
 import dev.gether.getcustomitem.item.customize.*;
@@ -25,26 +25,36 @@ import java.util.Set;
 @Setter
 public class Config extends GetConfig {
 
+    @Comment({
+            "",
+            "author - https://www.spigotmc.org/resources/authors/gethertv.571046/",
+            "discord: https://dc.gether.dev",
+            "",
+            "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html",
+            "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html",
+            "https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html",
+            ""
+    })
     private Set<CustomItem> customItems = new HashSet<>(
             Set.of(
                     new HookItem(
                             "hook",
                             "hook_category",
-                            true,
                             -1,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.FISHING_ROD,
-                                            "#f2ff69Magic fishing rod!",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#beff69× Use right click!",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.FISHING_ROD)
+                                    .displayname("#f2ff69Magic fishing rod!")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#beff69× Use right click!",
+                                                    "&7",
+                                                    "&7• Usage: #beff69{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.HOOK,
                             5,
@@ -69,22 +79,22 @@ public class Config extends GetConfig {
                     new CrossBowItem(
                             "crossbow",
                             "crossbow_category",
-                            true,
                             -1,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.CROSSBOW,
-                                            "#40ffe9Teleporting crossbow",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#85fff1× Hit a player and move him to you",
-                                                            "#85fff1× Chance: #c2fff8{chance}%",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.CROSSBOW)
+                                    .displayname("#40ffe9Teleporting crossbow")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#85fff1× Hit a player and move him to you",
+                                                    "#85fff1× Chance: #c2fff8{chance}%",
+                                                    "&7",
+                                                    "&7&7• Usage: #85fff1{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.CROSSBOW,
                             10,
@@ -113,24 +123,22 @@ public class Config extends GetConfig {
                     new CobwebGrenade(
                             "cobweb_grenade",
                             "cobweb_category",
-                            true,
                             5,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.SPLASH_POTION,
-                                            "#ff004cCobweb grenade",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#ff175c× Throw the grande to create",
-                                                            "#ff175c  a trap with cobweb &7(&f{radius-x}&7x&f{radius-y}&8) ",
-                                                            "&7",
-                                                            "&7• Usage: #ff004c{usage}",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.SPLASH_POTION)
+                                    .displayname("#ff004cCobweb grenade")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#ff175c× Throw the grande to create",
+                                                    "#ff175c  a trap with cobweb &7(&f{radius-x}&7x&f{radius-y}&8) ",
+                                                    "&7",
+                                                    "&7• Usage: #ff004c{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.COBWEB_GRENADE,
                             10,
@@ -156,28 +164,29 @@ public class Config extends GetConfig {
                                     .build(),
                             2,
                             2,
-                            5
+                            0.95,
+                            3
                     ),
                     new EffectRadiusItem(
                             "stick_levitation",
                             "levitation_category",
-                            false,
                             5,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.BLAZE_ROD,
-                                            "#ff9436Stick of levitation",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#ffba61× Use this item to give",
-                                                            "#ffba61  the levitation effect on X seconds",
-                                                            "#ffba61  to near players &7(&f{radius}&7x&f{radius}&7)",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.BLAZE_ROD)
+                                    .displayname("#ff9436Stick of levitation")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#ffba61× Use this item to give",
+                                                    "#ffba61  the levitation effect on X seconds",
+                                                    "#ffba61  to near players &7(&f{radius}&7x&f{radius}&7)",
+                                                    "&7",
+                                                    "&7• Usage: #ffba61{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.EFFECT_RADIUS,
                             10,
@@ -213,23 +222,23 @@ public class Config extends GetConfig {
                     new EffectRadiusItem(
                             "yeti_eye",
                             "yeti_eye_category",
-                            false,
                             5,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.SPIDER_EYE,
-                                            "#0015ffYeti eye",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#2e3fff× Use this item to give",
-                                                            "#2e3fff  the weakness effect on X seconds",
-                                                            "#2e3fff  to near players &7(&f{radius}&7x&f{radius}&7)",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.SPIDER_EYE)
+                                    .displayname("#0015ffYeti eye")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#2e3fff× Use this item to give",
+                                                    "#2e3fff  the weakness effect on X seconds",
+                                                    "#2e3fff  to near players &7(&f{radius}&7x&f{radius}&7)",
+                                                    "&7",
+                                                    "&7• Usage: #ffba61{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.EFFECT_RADIUS,
                             10,
@@ -265,22 +274,22 @@ public class Config extends GetConfig {
                     new EffectRadiusItem(
                             "air_filter",
                             "air_filter_category",
-                            false,
                             1,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.FLINT,
-                                            "#608a71Air filter",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#96b0a0× Use this item to clean",
-                                                            "#96b0a0  a negative effect from yourself",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.FLINT)
+                                    .displayname("#608a71Air filter")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#96b0a0× Use this item to clean",
+                                                    "#96b0a0  a negative effect from yourself",
+                                                    "&7",
+                                                    "&7• Usage: #96b0a0{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.EFFECT_RADIUS,
                             10,
@@ -312,23 +321,23 @@ public class Config extends GetConfig {
                     new EffectRadiusItem(
                             "ice_rod",
                             "ice_rod_category",
-                            false,
                             3,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.TRIDENT,
-                                            "#737d9cIce rod",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#9aa1b8× Use this item to remove",
-                                                            "#9aa1b8  all positive effects from",
-                                                            "#9aa1b8  players within a &f{radius}&7x&f{radius}#9aa1b8 radius",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.TRIDENT)
+                                    .displayname("#737d9cIce rod")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#9aa1b8× Use this item to remove",
+                                                    "#9aa1b8  all positive effects from",
+                                                    "#9aa1b8  players within a &f{radius}&7x&f{radius}#9aa1b8 radius",
+                                                    "&7",
+                                                    "&7• Usage: #9aa1b8{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.EFFECT_RADIUS,
                             10,
@@ -354,31 +363,31 @@ public class Config extends GetConfig {
                             new ArrayList<>(
                                     List.of(
                                             "SPEED",
-                                            "STRENGTH",
-                                            "JUMP_BOOST"
+                                            "INCREASE_DAMAGE",
+                                            "JUMP"
                                     )
                             )
                     ),
                     new FrozenSword(
                             "frozen_sword",
                             "frozen_sword_category",
-                            true,
-                            1,
+                            -1,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.OXEYE_DAISY,
-                                            "#3366ffFrozen sword",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#527dff× Hit the player to have",
-                                                            "#527dff  a {chance}% chance of freezing",
-                                                            "#527dff  them for {seconds} seconds!",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.OXEYE_DAISY)
+                                    .displayname("#3366ffFrozen sword")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#527dff× Hit the player to have",
+                                                    "#527dff  a {chance}% chance of freezing",
+                                                    "#527dff  them for {seconds} seconds!",
+                                                    "&7",
+                                                    "&7• Usage: #527dff{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.FROZEN_SWORD,
                             10,
@@ -403,23 +412,23 @@ public class Config extends GetConfig {
                     new AntyCobweb(
                             "anty_cobweb",
                             "anty_cobweb_category",
-                            true,
                             1,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.SOUL_LANTERN,
-                                            "#1aff00Anty-cobweb",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#78ff69× Use this item to",
-                                                            "#78ff69  remove all cobweb",
-                                                            "#78ff69  in radius &7(&f{radius-x}&7x&f{radius-y}&7)",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.SOUL_LANTERN)
+                                    .displayname("#1aff00Anty-cobweb")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#78ff69× Use this item to",
+                                                    "#78ff69  remove all cobweb",
+                                                    "#78ff69  in radius &7(&f{radius-x}&7x&f{radius-y}&7)",
+                                                    "&7",
+                                                    "&7• Usage: #78ff69{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.ANTY_COBWEB,
                             10,
@@ -444,23 +453,23 @@ public class Config extends GetConfig {
                     new MagicTotemItem(
                             "magic_totem",
                             "magic_totem_category",
-                            true,
-                            2,
+                            1,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.TOTEM_OF_UNDYING,
-                                            "#1aff00Magic totem",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#78ff69× Use this item to",
-                                                            "#78ff69  preserve {chance}% of your",
-                                                            "#78ff69  inventory upon dying",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.TOTEM_OF_UNDYING)
+                                    .displayname("#ff6a00Magic totem")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#ffb03b× Use this item to",
+                                                    "#ffb03b  preserve {chance}% of your",
+                                                    "#ffb03b  inventory upon dying",
+                                                    "&7",
+                                                    "&7• Usage: #ffb03b{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.MAGIC_TOTEM,
                             10,
@@ -484,24 +493,23 @@ public class Config extends GetConfig {
                     new BearFurItem(
                             "bear_fur",
                             "bear_fur_category",
-                            true,
                             10,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.PHANTOM_MEMBRANE,
-                                            "#85f2ffBear fur",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#c7f9ff× Use this item to reduced",
-                                                            "#c7f9ff  your damage by {reduced-damage}%",
-                                                            "#c7f9ff  for {seconds} seconds",
-                                                            "#c7f9ff",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.PHANTOM_MEMBRANE)
+                                    .displayname("#85f2ffBear fur")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#c7f9ff× Use this item to reduced",
+                                                    "#c7f9ff  your damage by {reduced-damage}%",
+                                                    "#c7f9ff  for {seconds} seconds",
+                                                    "&7",
+                                                    "&7• Usage: #c7f9ff{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.BEAR_FUR,
                             10,
@@ -526,23 +534,23 @@ public class Config extends GetConfig {
                     new HitEffectItem(
                             "wizard_staff",
                             "wizard_staff_category",
-                            true,
-                            1,
+                            -1,
                             Item.builder()
-                                    .itemStack(ItemBuilder.create(
-                                            Material.PHANTOM_MEMBRANE,
-                                            "#8c19ffWizard's staff",
-                                            new ArrayList<>(
-                                                    List.of(
-                                                            "&7",
-                                                            "#a74fff× Hit the player",
-                                                            "#a74fff  and give him custom effect",
-                                                            "#a74fff  Chance: &f{chance}%",
-                                                            "&7"
-                                                    )
-                                            ),
-                                            true
+                                    .material(Material.REDSTONE_TORCH)
+                                    .displayname("#8c19ffWizard's staff")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#a74fff× Hit the player",
+                                                    "#a74fff  and give him custom effect",
+                                                    "#a74fff  Chance: &f{chance}%",
+                                                    "&7",
+                                                    "&7• Usage: #a74fff{usage}",
+                                                    "&7"
+                                            )
                                     ))
+                                    .unbreakable(true)
+                                    .glow(true)
                                     .build(),
                             ItemType.HIT_EFFECT,
                             10,

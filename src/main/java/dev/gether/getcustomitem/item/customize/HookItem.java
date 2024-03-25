@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Getter
@@ -22,10 +23,15 @@ public class HookItem extends CustomItem {
 
     }
 
-    public HookItem(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, double multiply, double divideHeight) {
-        super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
+    public HookItem(String key, String categoryName, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, double multiply, double divideHeight) {
+        super(key, categoryName, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
         this.multiply = multiply;
         this.divideHeight = divideHeight;
+    }
+
+    @Override
+    protected Map<String, String> replacementValues() {
+        return Map.of();
     }
 
 

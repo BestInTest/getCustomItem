@@ -16,18 +16,19 @@ import org.bukkit.inventory.ItemStack;
 @Permission("getcustomitem.admin")
 public class CustomItemCommand {
 
-    private final GetCustomItem getCustomItem;
+    private final GetCustomItem plugin;
 
-    public CustomItemCommand(GetCustomItem getCustomItem) {
-        this.getCustomItem = getCustomItem;
+
+    public CustomItemCommand(GetCustomItem plugin) {
+        this.plugin = plugin;
     }
 
     /**
      *
-     * @param commandSender
-     * @param target
-     * @param customItem
-     * @param amount
+     * @param commandSender SENDER
+     * @param target player name who get the item
+     * @param customItem name of item (ID from CONFIG)
+     * @param amount amount of items to give
      *
      * give target(player) a custom item with specified amount
      */
@@ -42,24 +43,6 @@ public class CustomItemCommand {
 
     }
 
-    /**
-     *
-     * @param commandSender
-     *
-     * give selector item to the player who using the command
-     */
-    @Execute(name = "selector")
-    public void getSelector(@Context CommandSender commandSender) {
-        // check commandSender is player
-        if(commandSender instanceof Player player) {
-            ItemStack selectorItem = getCustomItem.getSelectorAddon().getSelectorItem(); // get item
-            player.getInventory().addItem(selectorItem); // give item to inv
-            MessageUtil.sendMessage(player, "&aSuccessful received the selector item!");
-        } else {
-            MessageUtil.sendMessage(commandSender, "&cYou cannot use this command by console");
-        }
-    }
-
     @Execute(name = "debug")
     public void debugItem(@Context CommandSender commandSender) {
         // check commandSender is player
@@ -69,6 +52,14 @@ public class CustomItemCommand {
         } else {
             MessageUtil.sendMessage(commandSender, "&cYou cannot use this command by console");
         }
+    }
+
+    @Execute(name = "reload")
+    public void reloadConfig(@Context CommandSender commandSender) {
+        //  reload config
+        plugin.reload();
+        MessageUtil.sendMessage(commandSender, "#40ff76Successfully reloaded config!");
+
     }
 
 

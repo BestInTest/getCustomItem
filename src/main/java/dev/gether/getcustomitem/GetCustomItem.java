@@ -1,9 +1,11 @@
 package dev.gether.getcustomitem;
 
 import dev.gether.getconfig.ConfigManager;
-import dev.gether.getconfig.selector.SelectorAddon;
+import dev.gether.getcustomitem.bstats.Metrics;
 import dev.gether.getcustomitem.cmd.CustomItemCommand;
 import dev.gether.getcustomitem.cmd.arg.CustomItemArg;
+import dev.gether.getcustomitem.cmd.handler.NoPermissionHandler;
+import dev.gether.getcustomitem.cmd.handler.UsageCmdHandler;
 import dev.gether.getcustomitem.config.Config;
 import dev.gether.getcustomitem.config.LangConfig;
 import dev.gether.getcustomitem.cooldown.CooldownManager;
@@ -28,8 +30,8 @@ public final class GetCustomItem extends JavaPlugin {
     private static GetCustomItem instance;
     private LiteCommands<CommandSender> liteCommands;
     private Config config;
-    //
-    private SelectorAddon selectorAddon;
+
+    private ItemManager itemManager;
 
     @Override
     public void onLoad() {
@@ -42,12 +44,11 @@ public final class GetCustomItem extends JavaPlugin {
     }
     @Override
     public void onEnable() {
-        // init selector
-        this.selectorAddon = new SelectorAddon();
-        this.selectorAddon.enable(this);
 
         // managers
-        ItemManager itemManager = new ItemManager(config);
+        itemManager = new ItemManager(config);
+        itemManager.initItems();
+
         CooldownManager cooldownManager = new CooldownManager(config);
         FrozenManager frozenManager = new FrozenManager();
         BearFurReducedManager bearFurReducedManager = new BearFurReducedManager();
@@ -69,6 +70,9 @@ public final class GetCustomItem extends JavaPlugin {
 
         // register command
         registerCommand(itemManager);
+
+        // register bstats
+        new Metrics(this, 21420);
     }
 
     private void registerCommand(ItemManager itemManager) {
@@ -76,6 +80,8 @@ public final class GetCustomItem extends JavaPlugin {
                 .commands(
                         new CustomItemCommand(this)
                 )
+                .invalidUsage(new UsageCmdHandler())
+                .missingPermission(new NoPermissionHandler())
                 .argument(CustomItem.class, new CustomItemArg(itemManager))
                 .build();
     }
@@ -87,17 +93,14 @@ public final class GetCustomItem extends JavaPlugin {
         if(this.liteCommands != null) {
             this.liteCommands.unregister();
         }
-        // unregister selector
-        if(this.selectorAddon != null) {
-            this.selectorAddon.disable();
-        }
 
         HandlerList.unregisterAll(this);
 
     }
 
-    public SelectorAddon getSelectorAddon() {
-        return selectorAddon;
+    public void reload() {
+        config.load();
+        itemManager.initItems();
     }
 
     public static GetCustomItem getInstance() {
@@ -107,4 +110,5 @@ public final class GetCustomItem extends JavaPlugin {
     public LangConfig getLang() {
         return config.getLangConfig();
     }
+
 }

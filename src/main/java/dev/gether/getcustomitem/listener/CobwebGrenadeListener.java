@@ -18,7 +18,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.Optional;
@@ -66,7 +65,7 @@ public class CobwebGrenadeListener implements Listener {
             ThrownPotion thrownPotion = (ThrownPotion) player.getWorld().spawnEntity(player.getLocation().clone().add(0, 1.1, 0), EntityType.SPLASH_POTION);
             thrownPotion.setItem(itemStack);
 
-            Location playerLocation = player.getEyeLocation();
+            Location playerLocation = player.getLocation().clone().add(0, cobwebGrenade.getHeightVelocity(), 0);
             Vector velocity = playerLocation.getDirection().multiply(cobwebGrenade.getMultiply());
             thrownPotion.setVelocity(velocity); // throw grenade
 

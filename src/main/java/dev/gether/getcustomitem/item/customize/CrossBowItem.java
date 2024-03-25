@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import dev.gether.getconfig.domain.Item;
 import dev.gether.getconfig.domain.config.particles.ParticleConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
-import dev.gether.getconfig.utils.ColorFixer;
 import dev.gether.getconfig.utils.ParticlesUtil;
 import dev.gether.getcustomitem.GetCustomItem;
 import dev.gether.getcustomitem.item.CustomItem;
@@ -12,13 +11,10 @@ import dev.gether.getcustomitem.item.ItemType;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Entity;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -29,37 +25,11 @@ public class CrossBowItem extends CustomItem {
     private double chance = 30;
     public CrossBowItem() {}
 
-    public CrossBowItem(String key, String categoryName, boolean cooldownCategory, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, ParticleConfig particleConfig, String permissionIgnoreEffect, double chance) {
-        super(key, categoryName, cooldownCategory, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
+    public CrossBowItem(String key, String categoryName, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, ParticleConfig particleConfig, String permissionIgnoreEffect, double chance) {
+        super(key, categoryName, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
         this.particleConfig = particleConfig;
         this.permissionIgnoreEffect = permissionIgnoreEffect;
         this.chance = chance;
-    }
-
-
-    @Override
-    public Item getItem() {
-        ItemStack itemStack = super.getItem().getItemStack().clone();
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if(itemMeta != null) {
-        itemMeta.setUnbreakable(true);
-
-            // set usage to persistent data
-            itemMeta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.INTEGER, usage);
-
-            List<String> lore = new ArrayList<>();
-            if (itemMeta.hasLore())
-                lore.addAll(itemMeta.getLore());
-
-            lore.replaceAll(line -> line.replace("{chance}", String.valueOf(chance))
-                    .replace("{usage}", String.valueOf(usage)));
-            itemMeta.setLore(ColorFixer.addColors(lore));
-        }
-        itemStack.setItemMeta(itemMeta);
-        return Item.builder()
-                .itemStack(itemStack)
-                .build();
     }
 
     public void runParticles(Entity arrow) {
@@ -80,5 +50,11 @@ public class CrossBowItem extends CustomItem {
                 ParticlesUtil.spawnParticles(arrow, particleConfig);
             }
         }.runTaskTimerAsynchronously(GetCustomItem.getInstance(), 0L, 0L);
+    }
+    @Override
+    protected Map<String, String> replacementValues() {
+        return Map.of(
+                "{chance}", String.valueOf(chance)
+        );
     }
 }

@@ -3,6 +3,7 @@ package dev.gether.getcustomitem.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import dev.gether.getconfig.annotation.Init;
 import dev.gether.getconfig.domain.Item;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getconfig.utils.ColorFixer;
@@ -21,7 +22,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -31,20 +35,19 @@ import java.util.List;
         @JsonSubTypes.Type(value = HookItem.class, name = "hook"),
         @JsonSubTypes.Type(value = CrossBowItem.class, name = "crossbow"),
         @JsonSubTypes.Type(value = CobwebGrenade.class, name = "cobweb_grenade"),
-        @JsonSubTypes.Type(value = EffectRadiusItem.class, name = "stick_levitation"),
+        @JsonSubTypes.Type(value = EffectRadiusItem.class, name = "effect_radius"),
         @JsonSubTypes.Type(value = FrozenSword.class, name = "frozen_sword"),
         @JsonSubTypes.Type(value = AntyCobweb.class, name = "anty_cobweb"),
         @JsonSubTypes.Type(value = BearFurItem.class, name = "bear_fur"),
         @JsonSubTypes.Type(value = MagicTotemItem.class, name = "magic_totem"),
         @JsonSubTypes.Type(value = HitEffectItem.class, name = "hit_effect"),
 })
-public class CustomItem {
+public abstract class CustomItem {
     @JsonIgnore
     protected NamespacedKey namespacedKey;
     private boolean enabled = true;
     private String key;
     private String categoryName;
-    private boolean cooldownCategory;
     protected int usage;
     private Item item;
     private ItemType itemType;
@@ -53,6 +56,8 @@ public class CustomItem {
     private SoundConfig soundConfig;
     private List<String> notifyYourself;
     private List<String> notifyOpponents;
+    @JsonIgnore
+    private ItemStack itemStack;
 
     public CustomItem() {
         this.namespacedKey = new NamespacedKey(GetCustomItem.getInstance(), key+"_usage");
@@ -60,7 +65,6 @@ public class CustomItem {
 
     public CustomItem(String key,
                       String categoryName,
-                      boolean cooldownCategory,
                       int usage,
                       Item item,
                       ItemType itemType,
@@ -72,7 +76,6 @@ public class CustomItem {
         this.namespacedKey = new NamespacedKey(GetCustomItem.getInstance(), key+"_usage");
         this.key = key;
         this.categoryName = categoryName;
-        this.cooldownCategory = cooldownCategory;
         this.usage = usage;
         this.item = item;
         this.itemType = itemType;
@@ -81,6 +84,28 @@ public class CustomItem {
         this.soundConfig = soundConfig;
         this.notifyYourself = notifyYourself;
         this.notifyOpponents = notifyOpponents;
+    }
+
+    @Init
+    public void init() {
+        itemStack = item.getItemStack().clone();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (itemMeta != null) {
+
+            // set usage to persistent data
+            itemMeta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.INTEGER, usage);
+
+            List<String> lore = new ArrayList<>();
+            if (itemMeta.hasLore())
+                lore.addAll(itemMeta.getLore());
+
+            // get replaced lore
+            lore = getLore(lore, usage);
+
+            itemMeta.setLore(ColorFixer.addColors(lore));
+        }
+        itemStack.setItemMeta(itemMeta);
     }
 
     public void playSound(Location location) {
@@ -93,26 +118,6 @@ public class CustomItem {
 
     @JsonIgnore
     public ItemStack getItemStack() {
-        ItemStack itemStack = item.getItemStack().clone();
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (itemMeta != null) {
-
-            itemMeta.setUnbreakable(true);
-
-            // set usage to persistent data
-            itemMeta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.INTEGER, usage);
-
-            List<String> lore = new ArrayList<>();
-            if (itemMeta.hasLore())
-                lore.addAll(itemMeta.getLore());
-
-            lore.replaceAll(line -> line
-                    .replace("{usage}", usage > 0 ? String.valueOf(usage) : GetCustomItem.getInstance().getLang().getNoLimit())
-            );
-            itemMeta.setLore(ColorFixer.addColors(lore));
-        }
-        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
@@ -157,14 +162,25 @@ public class CustomItem {
             return;
 
         List<String> lore = new ArrayList<>(originalMeta.getLore());
-        lore.replaceAll(line -> line
-                .replace("{usage}", String.valueOf(usage))
-        );
+        lore = getLore(lore, usage);
 
         itemMeta.setLore(ColorFixer.addColors(lore));
         itemStack.setItemMeta(itemMeta);
     }
 
+    private List<String> getLore(List<String> lore, int usage) {
+        Map<String, String> values = new HashMap<>(replacementValues());
+        values.put("{usage}", usage == -1 ? GetCustomItem.getInstance().getLang().getNoLimit() : String.valueOf(usage));
+
+        return lore.stream()
+                .map(line -> {
+                    for (Map.Entry<String, String> entry : values.entrySet()) {
+                        line = line.replace(entry.getKey(), entry.getValue());
+                    }
+                    return line;
+                })
+                .collect(Collectors.toList());
+    }
     public void takeUsage(Player player, ItemStack itemStack, EquipmentSlot equipmentSlot) {
         int usage = getUsage(itemStack.getItemMeta());
         if(usage != -1) {
@@ -202,4 +218,5 @@ public class CustomItem {
 
         MessageUtil.sendMessage(player, String.join("\n", notifyOpponents));
     }
+    protected abstract Map<String, String> replacementValues();
 }

@@ -30,6 +30,10 @@ public class ItemManager {
                 .map(CustomItem::getKey).collect(SuggestionResult.collector());
     }
 
+    public void initItems() {
+        config.getCustomItems().forEach(CustomItem::init);
+    }
+
 
     /*
     public Optional<ItemStack> findItemStackByType(ItemType itemType) {
