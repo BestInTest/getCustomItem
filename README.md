@@ -27,4 +27,17 @@ List of items:
 * ice_rod - use it to remove all positive effect from near players (list in config)
 * cobweb_grenade - throw the POTION and after the explosion place a COBWEB within X radius
 
+How create your own item?
+There you find the list of TYPE item what you can create:
+- frozen_sword
+- effect_radius
+- anty_cobweb
+- bear_fur
+- hit_effect
+- hook
+- crossbow
+- magic_totem
+- cobweb_grenade
 
+ Firstly full you must decide what type of item you want create, part of this have custom mechanic in plugin.
+ //todo
