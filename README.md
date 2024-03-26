@@ -9,9 +9,9 @@ Install:
   3. Next start the server and enjoyed it works!
 
 Commands:  permission: getcustomitem.admin
-/getcustomitem give <player> <name_item> <amount> - give custom item to player
-/getcustomitem reload - reload the config
-/getcustomitem debug - show info about the item what you have in hand
+<br> /getcustomitem give <player> <name_item> <amount> - give custom item to player
+<br> /getcustomitem reload - reload the config
+<br> /getcustomitem debug - show info about the item what you have in hand
 
 List of items:
 * frozen_sword - with this you can freeze the player
@@ -26,8 +26,5 @@ List of items:
 * magic_totem - keep this item in main-hand or off-hand to after death not lost all of your items
 * ice_rod - use it to remove all positive effect from near players (list in config)
 * cobweb_grenade - throw the POTION and after the explosion place a COBWEB within X radius
-
-* 
-
 
 
