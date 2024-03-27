@@ -3,6 +3,7 @@ package dev.gether.getcustomitem.config;
 import dev.gether.getconfig.GetConfig;
 import dev.gether.getconfig.annotation.Comment;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.particles.DustOptions;
 import dev.gether.getconfig.domain.config.particles.ParticleConfig;
 import dev.gether.getconfig.domain.config.potion.PotionEffectConfig;
@@ -73,8 +74,11 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             4,
-                            1.7
+                            1.7,
+                            2.0
                     ),
                     new CrossBowItem(
                             "crossbow",
@@ -113,6 +117,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             ParticleConfig.builder()
                                     .enable(true)
                                     .particle(Particle.HEART)
@@ -157,6 +163,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             ParticleConfig.builder()
                                     .enable(true)
                                     .dustOptions(new DustOptions(210, 255, 97, 5))
@@ -205,6 +213,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             true,
                             true,
                             5,
@@ -257,6 +267,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             true,
                             true,
                             5,
@@ -308,6 +320,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             true,
                             false,
                             2,
@@ -356,6 +370,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             false,
                             true,
                             5,
@@ -406,6 +422,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             2,
                             20
                     ),
@@ -447,6 +465,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             2,
                             2
                     ),
@@ -488,6 +508,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             10
                     ),
                     new BearFurItem(
@@ -528,6 +550,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             50,
                             5
                     ),
@@ -569,6 +593,8 @@ public class Config extends GetConfig {
                                             "#78ff69 × Example OPPONENTS!",
                                             "&7")
                             ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
                             new ArrayList<>(
                                     List.of(
                                             new PotionEffectConfig("SPEED", 5, 1)

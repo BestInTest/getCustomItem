@@ -3,6 +3,7 @@ package dev.gether.getcustomitem.item.customize;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import dev.gether.getconfig.annotation.Comment;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.potion.PotionEffectConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getcustomitem.item.CustomItem;
@@ -28,8 +29,28 @@ public class EffectRadiusItem extends CustomItem {
 
     public EffectRadiusItem() {}
 
-    public EffectRadiusItem(String key, String categoryName, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, boolean includingYou, boolean otherPlayers, int radius, List<PotionEffectConfig> activeEffect, List<String> removeEffect) {
-        super(key, categoryName, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
+    public EffectRadiusItem(String key,
+                            String categoryName,
+                            int usage,
+                            Item item,
+                            ItemType itemType,
+                            int cooldown,
+                            String permissionBypass,
+                            SoundConfig soundConfig,
+                            List<String> notifyYourself,
+                            List<String> notifyOpponents,
+                            TitleMessage titleYourself,
+                            TitleMessage titleOpponents,
+                            boolean includingYou,
+                            boolean otherPlayers,
+                            int radius,
+                            List<PotionEffectConfig> activeEffect,
+                            List<String> removeEffect) {
+
+        super(key, categoryName, usage, item, itemType, cooldown,
+                permissionBypass, soundConfig, notifyYourself,
+                notifyOpponents, titleYourself, titleOpponents);
+
         this.includingYou = includingYou;
         this.otherPlayers = otherPlayers;
         this.radius = radius;

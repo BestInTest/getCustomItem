@@ -47,10 +47,17 @@ public class FishRodListener implements Listener {
                 Location hooklocation = event.getHook().getLocation();
                 Location playerLocation = player.getLocation();
 
-                Vector direction = hooklocation.toVector().subtract(playerLocation.toVector());
-                direction.normalize();
 
-                Vector velocity = direction.multiply(hookItem.getMultiply());
+
+                Vector vector = playerLocation.toVector();
+                Vector direction = hooklocation.toVector().subtract(vector).normalize();
+
+                double divideGliding = hookItem.getDivideGliding();
+                double multiply = hookItem.getMultiply();
+                if(player.isGliding() && divideGliding != 0)
+                    multiply /= divideGliding;
+
+                Vector velocity = direction.multiply(multiply);
                 velocity.setY(velocity.getY()/hookItem.getDivideHeight());
                 player.setVelocity(velocity);
 

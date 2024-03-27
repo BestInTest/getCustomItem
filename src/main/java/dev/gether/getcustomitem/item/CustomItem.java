@@ -5,14 +5,17 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dev.gether.getconfig.annotation.Init;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getconfig.utils.ColorFixer;
 import dev.gether.getconfig.utils.ItemUtil;
 import dev.gether.getconfig.utils.MessageUtil;
+import dev.gether.getconfig.utils.PlayerUtil;
 import dev.gether.getcustomitem.GetCustomItem;
 import dev.gether.getcustomitem.item.customize.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -56,6 +59,9 @@ public abstract class CustomItem {
     private SoundConfig soundConfig;
     private List<String> notifyYourself;
     private List<String> notifyOpponents;
+    private TitleMessage titleYourself;
+    private TitleMessage titleOpponents;
+    private boolean visualCooldown = false;
     @JsonIgnore
     private ItemStack itemStack;
 
@@ -72,7 +78,9 @@ public abstract class CustomItem {
                       String permissionBypass,
                       SoundConfig soundConfig,
                       List<String> notifyYourself,
-                      List<String> notifyOpponents) {
+                      List<String> notifyOpponents,
+                      TitleMessage titleYourself,
+                      TitleMessage titleOpponents) {
         this.namespacedKey = new NamespacedKey(GetCustomItem.getInstance(), key+"_usage");
         this.key = key;
         this.categoryName = categoryName;
@@ -84,6 +92,8 @@ public abstract class CustomItem {
         this.soundConfig = soundConfig;
         this.notifyYourself = notifyYourself;
         this.notifyOpponents = notifyOpponents;
+        this.titleYourself = titleYourself;
+        this.titleOpponents = titleOpponents;
     }
 
     @Init
@@ -183,17 +193,32 @@ public abstract class CustomItem {
     }
     public void takeUsage(Player player, ItemStack itemStack, EquipmentSlot equipmentSlot) {
         int usage = getUsage(itemStack.getItemMeta());
-        if(usage != -1) {
-            if(usage == 1) {
-                if(equipmentSlot == EquipmentSlot.OFF_HAND)
-                    player.getInventory().setItemInOffHand(null);
-                else
-                    player.getInventory().setItemInMainHand(null);
-            } else {
-                takeAmount(itemStack);
-                updateItem(itemStack);
-            }
+        if(usage == -1)
+            return;
+
+        int amount = itemStack.getAmount();
+        // check if items is stacked
+        ItemStack remainingItem = null;
+        if(amount > 1) {
+            remainingItem = itemStack.clone();
+            remainingItem.setAmount(amount - 1);
+
+            itemStack.setAmount(1); // set original item amount to one
         }
+        if(usage == 1) {
+            if(equipmentSlot == EquipmentSlot.OFF_HAND)
+                player.getInventory().setItemInOffHand(null);
+            else
+                player.getInventory().setItemInMainHand(null);
+        } else {
+            takeAmount(itemStack);
+            updateItem(itemStack);
+        }
+
+        // give remaining item after the update USAGE in main item, because if
+        // I'll give faster than update, they again will be stacked
+        if(remainingItem != null)
+            PlayerUtil.giveItem(player, remainingItem); // give other item to inv
     }
 
     public void takeUsage(Player player) {
@@ -206,6 +231,9 @@ public abstract class CustomItem {
     }
 
     public void notifyYourself(Player player) {
+        // send title
+        MessageUtil.titleMessage(player, titleYourself);
+
         if(notifyYourself.isEmpty())
             return;
 
@@ -213,6 +241,9 @@ public abstract class CustomItem {
     }
 
     public void notifyOpponents(Player player) {
+        // send title
+        MessageUtil.titleMessage(player, titleOpponents);
+
         if(notifyOpponents.isEmpty())
             return;
 

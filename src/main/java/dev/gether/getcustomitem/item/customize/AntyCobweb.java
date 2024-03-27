@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.flags.Flags;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemType;
@@ -27,8 +28,25 @@ public class AntyCobweb extends CustomItem {
 
     public AntyCobweb() {}
 
-    public AntyCobweb(String key, String categoryName, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, int radiusX, int radiusY) {
-        super(key, categoryName, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
+    public AntyCobweb(String key,
+                      String categoryName,
+                      int usage,
+                      Item item,
+                      ItemType itemType,
+                      int cooldown,
+                      String permissionBypass,
+                      SoundConfig soundConfig,
+                      List<String> notifyYourself,
+                      List<String> notifyOpponents,
+                      TitleMessage titleYourself,
+                      TitleMessage titleOpponents,
+                      int radiusX,
+                      int radiusY) {
+
+        super(key, categoryName, usage, item, itemType, cooldown,
+                permissionBypass, soundConfig, notifyYourself,
+                notifyOpponents, titleYourself, titleOpponents);
+
         this.radiusX = radiusX;
         this.radiusY = radiusY;
     }

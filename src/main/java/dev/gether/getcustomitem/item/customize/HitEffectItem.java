@@ -2,6 +2,7 @@ package dev.gether.getcustomitem.item.customize;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.potion.PotionEffectConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getcustomitem.item.CustomItem;
@@ -20,8 +21,25 @@ public class HitEffectItem extends CustomItem {
     private double chance;
     public HitEffectItem() {}
 
-    public HitEffectItem(String key, String categoryName, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, List<PotionEffectConfig> potionEffectConfigs, double chance) {
-        super(key, categoryName, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
+    public HitEffectItem(String key,
+                         String categoryName,
+                         int usage,
+                         Item item,
+                         ItemType itemType,
+                         int cooldown,
+                         String permissionBypass,
+                         SoundConfig soundConfig,
+                         List<String> notifyYourself,
+                         List<String> notifyOpponents,
+                         TitleMessage titleYourself,
+                         TitleMessage titleOpponents,
+                         List<PotionEffectConfig> potionEffectConfigs,
+                         double chance) {
+
+        super(key, categoryName, usage, item, itemType, cooldown,
+                permissionBypass, soundConfig, notifyYourself,
+                notifyOpponents, titleYourself, titleOpponents);
+
         this.potionEffectConfigs = potionEffectConfigs;
         this.chance = chance;
     }

@@ -54,6 +54,10 @@ public class CooldownManager {
 
         // put to map
         cooldowns.put(key, cooldownEndMS);
+
+        // check a visual cooldown is enabled
+        if(customItem.isVisualCooldown())
+            player.setCooldown(customItem.getItemStack().getType(), 20 * customItem.getCooldown());
     }
 
     private String getPlayerKeyItem(Player player, CustomItem customItem) {

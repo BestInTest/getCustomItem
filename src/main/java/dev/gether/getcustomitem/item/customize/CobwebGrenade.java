@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.flags.Flags;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.particles.ParticleConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getconfig.utils.ParticlesUtil;
@@ -34,8 +35,27 @@ public class CobwebGrenade extends CustomItem {
     public CobwebGrenade() {
     }
 
-    public CobwebGrenade(String key, String categoryName, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, ParticleConfig particleConfig, int radius, int heightRadius, double multiply, double heightVelocity) {
-        super(key, categoryName, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
+    public CobwebGrenade(String key,
+                         String categoryName,
+                         int usage,
+                         Item item,
+                         ItemType itemType,
+                         int cooldown,
+                         String permissionBypass,
+                         SoundConfig soundConfig,
+                         List<String> notifyYourself,
+                         List<String> notifyOpponents,
+                         TitleMessage titleYourself,
+                         TitleMessage titleOpponents,
+                         ParticleConfig particleConfig,
+                         int radius,
+                         int heightRadius,
+                         double multiply,
+                         double heightVelocity) {
+        super(key, categoryName, usage, item, itemType, cooldown,
+                permissionBypass, soundConfig, notifyYourself,
+                notifyOpponents, titleYourself, titleOpponents);
+
         this.particleConfig = particleConfig;
         this.radius = radius;
         this.heightRadius = heightRadius;

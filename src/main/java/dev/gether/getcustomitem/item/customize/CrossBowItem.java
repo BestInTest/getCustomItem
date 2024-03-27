@@ -2,6 +2,7 @@ package dev.gether.getcustomitem.item.customize;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import dev.gether.getconfig.domain.Item;
+import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.particles.ParticleConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
 import dev.gether.getconfig.utils.ParticlesUtil;
@@ -25,8 +26,26 @@ public class CrossBowItem extends CustomItem {
     private double chance = 30;
     public CrossBowItem() {}
 
-    public CrossBowItem(String key, String categoryName, int usage, Item item, ItemType itemType, int cooldown, String permissionBypass, SoundConfig soundConfig, List<String> notifyYourself, List<String> notifyOpponents, ParticleConfig particleConfig, String permissionIgnoreEffect, double chance) {
-        super(key, categoryName, usage, item, itemType, cooldown, permissionBypass, soundConfig, notifyYourself, notifyOpponents);
+    public CrossBowItem(String key,
+                        String categoryName,
+                        int usage,
+                        Item item,
+                        ItemType itemType,
+                        int cooldown,
+                        String permissionBypass,
+                        SoundConfig soundConfig,
+                        List<String> notifyYourself,
+                        List<String> notifyOpponents,
+                        TitleMessage titleYourself,
+                        TitleMessage titleOpponents,
+                        ParticleConfig particleConfig,
+                        String permissionIgnoreEffect,
+                        double chance) {
+
+        super(key, categoryName, usage, item, itemType, cooldown,
+                permissionBypass, soundConfig, notifyYourself,
+                notifyOpponents, titleYourself, titleOpponents);
+
         this.particleConfig = particleConfig;
         this.permissionIgnoreEffect = permissionIgnoreEffect;
         this.chance = chance;
