@@ -55,9 +55,7 @@ public class AntyCobweb extends CustomItem {
             for (int y = -radiusY + 1; y < radiusY; y++) {
                 for (int z = -radiusX + 1; z < radiusX; z++) {
                     Location tempLoc = location.clone().add(x, y, z);
-                    com.sk89q.worldedit.util.Location locWordGuard = BukkitAdapter.adapt(tempLoc);
-                    if (WorldGuardUtil.isInRegion(locWordGuard) &&
-                            WorldGuardUtil.isDeniedFlag(tempLoc, null, Flags.BLOCK_BREAK)) {
+                    if (WorldGuardUtil.isDeniedFlag(tempLoc, null, Flags.BLOCK_BREAK)) {
                         continue;
                     }
                     Block block = tempLoc.getBlock();

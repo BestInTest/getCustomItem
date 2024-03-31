@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 public class WorldGuardUtil {
 
     public static boolean isDeniedFlag(Location location, Player player, StateFlag stateFlag) {
-        LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+        LocalPlayer localPlayer = player != null ? WorldGuardPlugin.inst().wrapPlayer(player) : null;
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = regionContainer.createQuery();
 
@@ -28,7 +28,7 @@ public class WorldGuardUtil {
             return !query.testState(loc, localPlayer, stateFlag);
         } else {
             return location.getWorld() != null &&
-                    checkGlobalRegion(BukkitAdapter.adapt(location.getWorld()), stateFlag);
+                    !canUseInGlobal(BukkitAdapter.adapt(location.getWorld()), stateFlag);
         }
     }
 
@@ -42,12 +42,12 @@ public class WorldGuardUtil {
         return !applicableRegions.getRegions().isEmpty();
     }
 
-    private static boolean checkGlobalRegion(World world, StateFlag stateFlag) {
+    private static boolean canUseInGlobal(World world, StateFlag stateFlag) {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regions = container.get(world);
         if (regions != null) {
             ProtectedRegion globalRegion = regions.getRegion("__global__");
-            return globalRegion != null && globalRegion.getFlag(stateFlag) != StateFlag.State.ALLOW;
+            return globalRegion != null && globalRegion.getFlag(stateFlag) == StateFlag.State.ALLOW;
         }
         return false;
     }

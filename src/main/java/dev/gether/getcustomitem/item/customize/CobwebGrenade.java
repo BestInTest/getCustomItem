@@ -68,9 +68,7 @@ public class CobwebGrenade extends CustomItem {
             for (int y = -heightRadius + 1; y < heightRadius; y++) {
                 for (int z = -radius + 1; z < radius; z++) {
                     Location tempLoc = location.clone().add(x, y, z);
-                    com.sk89q.worldedit.util.Location locWordGuard = BukkitAdapter.adapt(tempLoc);
-                    boolean deniedFlag = WorldGuardUtil.isDeniedFlag(tempLoc, null, Flags.BLOCK_PLACE);
-                    if (WorldGuardUtil.isInRegion(locWordGuard) && deniedFlag) {
+                    if (WorldGuardUtil.isDeniedFlag(tempLoc, null, Flags.BLOCK_PLACE)) {
                         continue;
                     }
                     Block block = tempLoc.getBlock();

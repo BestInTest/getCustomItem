@@ -73,11 +73,9 @@ public class EffectRadiusListener implements Listener {
 
             /* world-guard section */
             // check the using player is in PVP region
-            if(WorldGuardUtil.isInRegion(player) &&
-                    WorldGuardUtil.isDeniedFlag(player.getLocation(), player, Flags.PVP)) {
+            if(WorldGuardUtil.isDeniedFlag(player.getLocation(), player, Flags.PVP)) {
                 return;
             }
-
 
             // alert
             effectRadiusItem.notifyYourself(player);

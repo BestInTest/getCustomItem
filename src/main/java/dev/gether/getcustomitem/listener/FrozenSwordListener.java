@@ -73,28 +73,26 @@ public class FrozenSwordListener implements Listener {
             if(isCitizensNPC) return;
 
 
+            /* world-guard section */
+            // check the using player is in PVP region
+            if(WorldGuardUtil.isDeniedFlag(damager.getLocation(), damager, Flags.PVP)) {
+                return;
+            }
+            if(WorldGuardUtil.isDeniedFlag(victim.getLocation(), victim, Flags.PVP)) {
+                return;
+            }
+
             double cooldownSeconds = cooldownManager.getCooldownSecond(damager, frozenSword);
             if(cooldownSeconds <= 0 || damager.hasPermission(frozenSword.getPermissionBypass())) {
+
                 // set cooldown
                 cooldownManager.setCooldown(damager, frozenSword);
 
-                // particles and sound
-                frozenSword.playSound(damager.getLocation()); // play sound
-
-                /* world-guard section */
-                // check the using player is in PVP region
-                if(WorldGuardUtil.isInRegion(damager) &&
-                        WorldGuardUtil.isDeniedFlag(damager.getLocation(), damager, Flags.PVP)) {
-                    return;
-                }
-                if(WorldGuardUtil.isInRegion(victim) &&
-                        WorldGuardUtil.isDeniedFlag(victim.getLocation(), victim, Flags.PVP)) {
-                    return;
-                }
-
-
                 double winTicket = random.nextDouble() * 100;
                 if(winTicket <= frozenSword.getChanceToFrozen()) {
+
+                    // particles and sound
+                    frozenSword.playSound(damager.getLocation()); // play sound
 
                     // alerts
                     frozenSword.notifyYourself(damager);

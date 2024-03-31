@@ -58,34 +58,33 @@ public class HitEffectListener implements Listener {
             boolean isCitizensNPC = victim.hasMetadata("NPC");
             if(isCitizensNPC) return;
 
+            /* world-guard section */
+            // check the using player is in PVP region
+            if(WorldGuardUtil.isDeniedFlag(damager.getLocation(), damager, Flags.PVP)) {
+                return;
+            }
+            if(WorldGuardUtil.isDeniedFlag(victim.getLocation(), victim, Flags.PVP)) {
+                return;
+            }
+
             double cooldownSeconds = cooldownManager.getCooldownSecond(damager, hitEffectItem);
             if(cooldownSeconds <= 0 || damager.hasPermission(hitEffectItem.getPermissionBypass())) {
-                /* world-guard section */
-                // check the using player is in PVP region
-                if(WorldGuardUtil.isInRegion(damager) &&
-                        WorldGuardUtil.isDeniedFlag(damager.getLocation(), damager, Flags.PVP)) {
-                    return;
-                }
-                if(WorldGuardUtil.isInRegion(victim) &&
-                        WorldGuardUtil.isDeniedFlag(victim.getLocation(), victim, Flags.PVP)) {
-                    return;
-                }
 
                 // set cooldown
                 cooldownManager.setCooldown(damager, hitEffectItem);
 
-                // particles and sound
-                hitEffectItem.playSound(damager.getLocation()); // play sound
-
-                // verify a value to usage of item
-                hitEffectItem.takeUsage(damager, itemStack, EquipmentSlot.HAND);
-
-                // alerts
-                hitEffectItem.notifyYourself(damager);
-
-
                 double winTicket = random.nextDouble() * 100;
                 if(winTicket <= hitEffectItem.getChance()) {
+
+                    // particles and sound
+                    hitEffectItem.playSound(damager.getLocation()); // play sound
+
+                    // verify a value to usage of item
+                    hitEffectItem.takeUsage(damager, itemStack, EquipmentSlot.HAND);
+
+                    // alerts
+                    hitEffectItem.notifyYourself(damager);
+
                     hitEffectItem.notifyOpponents(victim); // alert opponent
 
                     List<PotionEffect> activePotionEffect = PotionConverUtil.getPotionEffectFromConfig(hitEffectItem.getPotionEffectConfigs());

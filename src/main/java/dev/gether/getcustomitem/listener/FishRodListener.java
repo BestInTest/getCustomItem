@@ -47,8 +47,6 @@ public class FishRodListener implements Listener {
                 Location hooklocation = event.getHook().getLocation();
                 Location playerLocation = player.getLocation();
 
-
-
                 Vector vector = playerLocation.toVector();
                 Vector direction = hooklocation.toVector().subtract(vector).normalize();
 
