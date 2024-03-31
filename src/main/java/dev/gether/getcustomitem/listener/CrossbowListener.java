@@ -130,14 +130,12 @@ public class CrossbowListener implements Listener {
 
             /* world-guard section */
             // check if the hit player is in the pvp region
-            if(WorldGuardUtil.isInRegion(hitPlayer) &&
-                    WorldGuardUtil.isDeniedFlag(hitPlayer.getLocation(), hitPlayer, Flags.PVP)) {
+            if(WorldGuardUtil.isDeniedFlag(hitPlayer.getLocation(), hitPlayer, Flags.PVP)) {
                 return;
             }
 
             // check if the shooter player is in the pvp region
-            if(WorldGuardUtil.isInRegion(shooter) &&
-                    WorldGuardUtil.isDeniedFlag(shooter.getLocation(), shooter, Flags.PVP)) {
+            if(WorldGuardUtil.isDeniedFlag(shooter.getLocation(), shooter, Flags.PVP)) {
                 return;
             }
 

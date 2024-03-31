@@ -7,6 +7,7 @@ import dev.gether.getconfig.domain.Item;
 import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.particles.ParticleConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
+import dev.gether.getconfig.utils.MessageUtil;
 import dev.gether.getconfig.utils.ParticlesUtil;
 import dev.gether.getcustomitem.GetCustomItem;
 import dev.gether.getcustomitem.item.CustomItem;
@@ -68,8 +69,8 @@ public class CobwebGrenade extends CustomItem {
                 for (int z = -radius + 1; z < radius; z++) {
                     Location tempLoc = location.clone().add(x, y, z);
                     com.sk89q.worldedit.util.Location locWordGuard = BukkitAdapter.adapt(tempLoc);
-                    if (WorldGuardUtil.isInRegion(locWordGuard) &&
-                            WorldGuardUtil.isDeniedFlag(tempLoc, Flags.BUILD)) {
+                    boolean deniedFlag = WorldGuardUtil.isDeniedFlag(tempLoc, null, Flags.BLOCK_PLACE);
+                    if (WorldGuardUtil.isInRegion(locWordGuard) && deniedFlag) {
                         continue;
                     }
                     Block block = tempLoc.getBlock();

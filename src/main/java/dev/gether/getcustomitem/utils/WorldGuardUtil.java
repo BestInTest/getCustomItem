@@ -1,34 +1,35 @@
 package dev.gether.getcustomitem.utils;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+
 public class WorldGuardUtil {
 
-    public static boolean isDeniedFlag(Location location, Player player, StateFlag stateFlag){
+    public static boolean isDeniedFlag(Location location, Player player, StateFlag stateFlag) {
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = regionContainer.createQuery();
 
         com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(location);
 
-        return query.testState(loc, localPlayer, stateFlag);
-    }
-    public static boolean isDeniedFlag(Location location, StateFlag stateFlag){
-        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = regionContainer.createQuery();
-
-        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(location);
-
-        return query.testState(loc, null, stateFlag);
+        if(isInRegion(loc)) {
+            return !query.testState(loc, localPlayer, stateFlag);
+        } else {
+            return location.getWorld() != null &&
+                    checkGlobalRegion(BukkitAdapter.adapt(location.getWorld()), stateFlag);
+        }
     }
 
     public static boolean isInRegion(Player player) {
@@ -39,5 +40,15 @@ public class WorldGuardUtil {
         RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
         ApplicableRegionSet applicableRegions = query.getApplicableRegions(location);
         return !applicableRegions.getRegions().isEmpty();
+    }
+
+    private static boolean checkGlobalRegion(World world, StateFlag stateFlag) {
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(world);
+        if (regions != null) {
+            ProtectedRegion globalRegion = regions.getRegion("__global__");
+            return globalRegion != null && globalRegion.getFlag(stateFlag) != StateFlag.State.ALLOW;
+        }
+        return false;
     }
 }
