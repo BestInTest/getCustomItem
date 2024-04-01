@@ -3,7 +3,6 @@ package dev.gether.getcustomitem.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import dev.gether.getconfig.annotation.Init;
 import dev.gether.getconfig.domain.Item;
 import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
@@ -95,7 +94,6 @@ public abstract class CustomItem {
         this.titleOpponents = titleOpponents;
     }
 
-    @Init
     public void init() {
         itemStack = item.getItemStack().clone();
         ItemMeta itemMeta = itemStack.getItemMeta();
