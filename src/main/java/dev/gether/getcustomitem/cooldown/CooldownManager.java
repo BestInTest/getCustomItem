@@ -56,7 +56,7 @@ public class CooldownManager {
         cooldowns.put(key, cooldownEndMS);
 
         // check a visual cooldown is enabled
-        if(customItem.isVisualCooldown())
+        if(customItem.isVisualCooldown() && !player.hasPermission(customItem.getPermissionBypass()))
             player.setCooldown(customItem.getItemStack().getType(), 20 * customItem.getCooldown());
     }
 

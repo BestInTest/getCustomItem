@@ -27,8 +27,8 @@ public class WorldGuardUtil {
         if(isInRegion(loc)) {
             return !query.testState(loc, localPlayer, stateFlag);
         } else {
-            return location.getWorld() != null &&
-                    !canUseInGlobal(BukkitAdapter.adapt(location.getWorld()), stateFlag);
+            boolean status = canUseInGlobal(BukkitAdapter.adapt(location.getWorld()), stateFlag);
+            return location.getWorld() != null && !status;
         }
     }
 
@@ -47,8 +47,8 @@ public class WorldGuardUtil {
         RegionManager regions = container.get(world);
         if (regions != null) {
             ProtectedRegion globalRegion = regions.getRegion("__global__");
-            return globalRegion != null && globalRegion.getFlag(stateFlag) == StateFlag.State.ALLOW;
+            return globalRegion != null && globalRegion.getFlag(stateFlag) != StateFlag.State.DENY;
         }
-        return false;
+        return true;
     }
 }
