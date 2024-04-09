@@ -601,6 +601,48 @@ public class Config extends GetConfig {
                                     )
                             ),
                             50
+                    ),
+                    new SnowballTPItem(
+                            "snowball_tp",
+                            "snowball_tp_category",
+                            -1,
+                            Item.builder()
+                                    .material(Material.SNOWBALL)
+                                    .displayname("#8c19ffSnowball TP")
+                                    .lore(new ArrayList<>(
+                                            List.of(
+                                                    "&7",
+                                                    "#a74fff× Hit the player",
+                                                    "#a74fff  and swap locations",
+                                                    "#a74fff  with them",
+                                                    "&7",
+                                                    "&7• Usage: #a74fff{usage}",
+                                                    "&7"
+                                            )
+                                    ))
+                                    .unbreakable(true)
+                                    .glow(true)
+                                    .build(),
+                            ItemType.SNOWBALL_TP,
+                            10,
+                            "getcustomitem.snowballtp.bypass",
+                            SoundConfig.builder()
+                                    .enable(true)
+                                    .sound(Sound.BLOCK_ENCHANTMENT_TABLE_USE)
+                                    .build(),
+                            new ArrayList<>(
+                                    List.of("&7",
+                                            "#78ff69 × Example YOURSELF!",
+                                            "&7")
+                            ),
+                            new ArrayList<>(
+                                    List.of("&7",
+                                            "#78ff69 × Example OPPONENTS!",
+                                            "&7")
+                            ),
+                            new TitleMessage(false, "&aTitle Yourself", "&7Subtitle", 10, 20, 10),
+                            new TitleMessage(false, "&aTitle opponents", "&7Subtitle", 10, 20, 10),
+                            2.5f
                     )
             )
     );

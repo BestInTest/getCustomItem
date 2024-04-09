@@ -9,5 +9,6 @@ public enum ItemType {
     ANTY_COBWEB,
     BEAR_FUR,
     MAGIC_TOTEM,
-    HIT_EFFECT
+    HIT_EFFECT,
+    SNOWBALL_TP
 }

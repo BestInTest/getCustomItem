@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
         @JsonSubTypes.Type(value = BearFurItem.class, name = "bear_fur"),
         @JsonSubTypes.Type(value = MagicTotemItem.class, name = "magic_totem"),
         @JsonSubTypes.Type(value = HitEffectItem.class, name = "hit_effect"),
+        @JsonSubTypes.Type(value = SnowballTPItem.class, name = "snowball_tp"),
 })
 public abstract class CustomItem {
     @JsonIgnore
@@ -203,10 +204,12 @@ public abstract class CustomItem {
             itemStack.setAmount(1); // set original item amount to one
         }
         if(usage == 1) {
-            if(equipmentSlot == EquipmentSlot.OFF_HAND)
+            if(equipmentSlot == EquipmentSlot.OFF_HAND) {
                 player.getInventory().setItemInOffHand(null);
-            else
+            }
+            else {
                 player.getInventory().setItemInMainHand(null);
+            }
         } else {
             takeAmount(itemStack);
             updateItem(itemStack);

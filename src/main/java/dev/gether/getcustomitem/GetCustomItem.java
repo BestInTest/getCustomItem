@@ -65,7 +65,8 @@ public final class GetCustomItem extends JavaPlugin {
                 new MagicTotemListener(itemManager, cooldownManager, config, magicTotemManager),
                 new BearFurListener(itemManager, cooldownManager, bearFurReducedManager, config),
                 new HitEffectListener(itemManager, cooldownManager, config),
-                new PlayerQuitListener(bearFurReducedManager, cooldownManager, frozenManager)
+                new PlayerQuitListener(bearFurReducedManager, cooldownManager, frozenManager),
+                new SnowballTeleport(itemManager, cooldownManager, config)
         ).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
 
         // register command

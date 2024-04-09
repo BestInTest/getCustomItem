@@ -1,12 +1,14 @@
 package dev.gether.getcustomitem.listener;
 
 import dev.gether.getconfig.utils.MessageUtil;
+import dev.gether.getcustomitem.GetCustomItem;
 import dev.gether.getcustomitem.config.Config;
 import dev.gether.getcustomitem.cooldown.CooldownManager;
 import dev.gether.getcustomitem.item.ItemManager;
 import dev.gether.getcustomitem.item.ItemType;
 import dev.gether.getcustomitem.item.customize.MagicTotemItem;
 import dev.gether.getcustomitem.item.manager.MagicTotemManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -101,16 +103,19 @@ public class MagicTotemListener implements Listener {
                 .orElse(null);
     }
     private void processDeathWithTotem(Player player, MagicTotemItem magicTotemItem) {
-        PlayerInventory inventory = player.getInventory();
         HashMap<Integer, ItemStack> savedItems = new HashMap<>();
-
 
         // verify a value to usage of item
         magicTotemItem.takeUsage(player);
 
+        // after remove the magic totem, take a player inventory to get actually items
+        PlayerInventory inventory = player.getInventory();
+
+
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);
             if (item == null || item.getType() == Material.AIR) continue;
+
             double chance = random.nextDouble() * 100;
             if (magicTotemItem.getChanceLostItem() >= chance) {
                 savedItems.put(i, item.clone());
@@ -121,6 +126,7 @@ public class MagicTotemListener implements Listener {
 
         // save the selected items to be restored after respawn
         magicTotemManager.saveItems(player, savedItems);
+
     }
 
 }
