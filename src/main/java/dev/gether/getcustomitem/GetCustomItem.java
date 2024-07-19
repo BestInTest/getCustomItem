@@ -1,6 +1,7 @@
 package dev.gether.getcustomitem;
 
 import dev.gether.getconfig.ConfigManager;
+import dev.gether.getconfig.utils.MessageUtil;
 import dev.gether.getcustomitem.bstats.Metrics;
 import dev.gether.getcustomitem.cmd.CustomItemCommand;
 import dev.gether.getcustomitem.cmd.arg.CustomItemArg;
@@ -10,12 +11,14 @@ import dev.gether.getcustomitem.config.Config;
 import dev.gether.getcustomitem.config.LangConfig;
 import dev.gether.getcustomitem.cooldown.CooldownManager;
 import dev.gether.getcustomitem.item.CustomItem;
+import dev.gether.getcustomitem.item.customize.CobwebGrenade;
 import dev.gether.getcustomitem.item.manager.BearFurReducedManager;
 import dev.gether.getcustomitem.item.manager.FrozenManager;
 import dev.gether.getcustomitem.item.ItemManager;
 import dev.gether.getcustomitem.item.manager.MagicTotemManager;
 import dev.gether.getcustomitem.listener.*;
 import dev.gether.getcustomitem.listener.global.PlayerQuitListener;
+import dev.gether.getcustomitem.tasks.CobwebAutoRemoveTask;
 import dev.rollczi.litecommands.LiteCommands;
 import dev.rollczi.litecommands.bukkit.LiteBukkitFactory;
 import org.bukkit.command.CommandSender;
@@ -30,6 +33,7 @@ public final class GetCustomItem extends JavaPlugin {
     private static GetCustomItem instance;
     private LiteCommands<CommandSender> liteCommands;
     private Config config;
+    private CobwebAutoRemoveTask cobwebAutoRemoveTask;
 
     private ItemManager itemManager;
 
@@ -74,6 +78,21 @@ public final class GetCustomItem extends JavaPlugin {
 
         // register bstats
         new Metrics(this, 21420);
+
+        // cobweb autoremove task
+        int removeAfter = 0;
+        for (CustomItem customItem : config.getCustomItems()) {
+            if (customItem instanceof CobwebGrenade cobwebGrenade) {
+                removeAfter = cobwebGrenade.getAutoRemoveAfter();
+            }
+        }
+        if (removeAfter > 0) {
+            MessageUtil.logMessage("", "Starting cobweb auto remove task...");
+            this.cobwebAutoRemoveTask = new CobwebAutoRemoveTask(removeAfter);
+            this.cobwebAutoRemoveTask.runTaskTimer(this, 100, 60 * 20L); // every 1 min
+        } else {
+            MessageUtil.logMessage("", "Cobweb auto remove is disabled");
+        }
     }
 
     private void registerCommand(ItemManager itemManager) {
@@ -89,6 +108,12 @@ public final class GetCustomItem extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        //save cobweb locations
+        if(this.cobwebAutoRemoveTask != null) {
+            cobwebAutoRemoveTask.cancel();
+            this.cobwebAutoRemoveTask.getCobwebLocations().saveToFile();
+        }
 
         // unregister cmd
         if(this.liteCommands != null) {
@@ -106,6 +131,10 @@ public final class GetCustomItem extends JavaPlugin {
 
     public static GetCustomItem getInstance() {
         return instance;
+    }
+
+    public CobwebAutoRemoveTask getCobwebAutoRemoveTask() {
+        return cobwebAutoRemoveTask;
     }
 
     public LangConfig getLang() {

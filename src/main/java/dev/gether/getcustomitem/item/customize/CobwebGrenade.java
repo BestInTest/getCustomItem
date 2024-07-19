@@ -2,16 +2,22 @@ package dev.gether.getcustomitem.item.customize;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import dev.gether.getconfig.domain.Item;
 import dev.gether.getconfig.domain.config.TitleMessage;
 import dev.gether.getconfig.domain.config.particles.ParticleConfig;
 import dev.gether.getconfig.domain.config.sound.SoundConfig;
-import dev.gether.getconfig.utils.MessageUtil;
 import dev.gether.getconfig.utils.ParticlesUtil;
 import dev.gether.getcustomitem.GetCustomItem;
+import dev.gether.getcustomitem.config.RegionConfig;
 import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemType;
+import dev.gether.getcustomitem.tasks.data.CobwebLocationRecord;
+import dev.gether.getcustomitem.tasks.data.SerializableLocation;
 import dev.gether.getcustomitem.utils.WorldGuardUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +39,7 @@ public class CobwebGrenade extends CustomItem {
     private int heightRadius;
     private double multiply;
     private double heightVelocity;
+    private int autoRemoveAfter;
     public CobwebGrenade() {
     }
 
@@ -52,7 +59,8 @@ public class CobwebGrenade extends CustomItem {
                          int radius,
                          int heightRadius,
                          double multiply,
-                         double heightVelocity) {
+                         double heightVelocity,
+                         int autoRemoveAfter) {
         super(key, categoryName, usage, item, itemType, cooldown,
                 permissionBypass, soundConfig, notifyYourself,
                 notifyOpponents, titleYourself, titleOpponents);
@@ -62,12 +70,21 @@ public class CobwebGrenade extends CustomItem {
         this.heightRadius = heightRadius;
         this.multiply = multiply;
         this.heightVelocity = heightVelocity;
+        this.autoRemoveAfter = autoRemoveAfter;
     }
-    public void spawnCobweb(Location location) {
+    public void spawnCobweb(Location location, RegionConfig regionConfig) {
+        //Save only center of the cobwebs
+        SerializableLocation center = new SerializableLocation(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        CobwebLocationRecord record = new CobwebLocationRecord(center, radius, heightRadius, System.currentTimeMillis());
+        GetCustomItem.getInstance().getCobwebAutoRemoveTask().getCobwebLocations().addLocation(record);
+
         for (int x = -radius + 1; x < radius; x++) {
             for (int y = -heightRadius + 1; y < heightRadius; y++) {
                 for (int z = -radius + 1; z < radius; z++) {
                     Location tempLoc = location.clone().add(x, y, z);
+                    if (WorldGuardUtil.isInDisallowedRegion(tempLoc, regionConfig)) {
+                        continue;
+                    }
                     if (WorldGuardUtil.isDeniedFlag(tempLoc, null, Flags.BLOCK_PLACE)) {
                         continue;
                     }

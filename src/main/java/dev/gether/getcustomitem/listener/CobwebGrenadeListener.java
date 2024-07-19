@@ -8,6 +8,7 @@ import dev.gether.getcustomitem.item.CustomItem;
 import dev.gether.getcustomitem.item.ItemManager;
 import dev.gether.getcustomitem.item.ItemType;
 import dev.gether.getcustomitem.item.customize.CobwebGrenade;
+import dev.gether.getcustomitem.utils.WorldGuardUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -51,6 +52,9 @@ public class CobwebGrenadeListener implements Listener {
             return;
 
         event.setCancelled(true);
+
+        if(WorldGuardUtil.isInDisallowedRegion(player.getLocation(), config.getRegionConfig()))
+            return;
 
         Action action = event.getAction();
         if(action != Action.RIGHT_CLICK_BLOCK && action != Action.RIGHT_CLICK_AIR)
@@ -98,7 +102,7 @@ public class CobwebGrenadeListener implements Listener {
 
         CobwebGrenade cobwebGrenade = (CobwebGrenade) customItemByType.get();
         if(ItemUtil.sameItemName(itemStack, cobwebGrenade.getItem().getItemStack())) {
-            cobwebGrenade.spawnCobweb(location); // spawn cobweb
+            cobwebGrenade.spawnCobweb(location, config.getRegionConfig()); // spawn cobweb
         }
     }
 

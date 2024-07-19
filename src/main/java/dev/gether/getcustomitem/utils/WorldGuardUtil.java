@@ -11,8 +11,11 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import dev.gether.getcustomitem.config.RegionConfig;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 
 public class WorldGuardUtil {
@@ -50,5 +53,19 @@ public class WorldGuardUtil {
             return globalRegion != null && globalRegion.getFlag(stateFlag) != StateFlag.State.DENY;
         }
         return true;
+    }
+
+    public static boolean isInDisallowedRegion(Location loc, RegionConfig regionConfig) {
+        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+        ApplicableRegionSet applicableRegions = query.getApplicableRegions(BukkitAdapter.adapt(loc));
+
+        for (ProtectedRegion region : applicableRegions) {
+            List<String> disallowedRegions = regionConfig.getDisallowedRegions();
+            if (disallowedRegions.contains(region.getId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

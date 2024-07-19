@@ -173,7 +173,8 @@ public class Config extends GetConfig {
                             2,
                             2,
                             0.95,
-                            3
+                            3,
+                            3600
                     ),
                     new EffectRadiusItem(
                             "stick_levitation",
@@ -648,5 +649,7 @@ public class Config extends GetConfig {
     );
 
     private LangConfig langConfig = new LangConfig();
+
+    private RegionConfig regionConfig = new RegionConfig();
 
 }
